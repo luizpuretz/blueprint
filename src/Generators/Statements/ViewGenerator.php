@@ -24,10 +24,13 @@ class ViewGenerator implements Generator
 
         $stub = $this->files->stub('view.stub');
 
+        // dd($tree->controllers());
         /** @var \Blueprint\Models\Controller $controller */
         foreach ($tree->controllers() as $controller) {
             foreach ($controller->methods() as $method => $statements) {
                 foreach ($statements as $statement) {
+                    
+                    // dd($controller->name());
                     if (! $statement instanceof RenderStatement) {
                         continue;
                     }
@@ -43,7 +46,7 @@ class ViewGenerator implements Generator
                         $this->files->makeDirectory(dirname($path), 0755, true);
                     }
 
-                    $this->files->put($path, $this->populateStub($stub, $statement));
+                    $this->files->put($path, $this->populateStub($stub, $statement, $controller));
 
                     $output['created'][] = $path;
                 }
@@ -63,8 +66,16 @@ class ViewGenerator implements Generator
         return 'resources/views/'.str_replace('.', '/', $view).'.blade.php';
     }
 
-    protected function populateStub(string $stub, RenderStatement $renderStatement)
+    protected function populateStub(string $stub, RenderStatement $renderStatement, $controller)
     {
-        return str_replace('{{ view }}', $renderStatement->view(), $stub);
+        return str_replace('{{ view }}', $renderStatement->view(), $this->stubTitlePage($stub, $controller));
+        // return str_replace('{{ title_page }}', $controller->name(), $xxx);
     }
+
+    protected function stubTitlePage($stub, $controller)
+    {
+        return str_replace('{{ title_page }}', $controller->name(), $stub);
+    }
+
+
 }
