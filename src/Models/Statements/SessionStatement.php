@@ -33,10 +33,18 @@ class SessionStatement
 
     public function output()
     {
-        $code = '$request->session()->' . $this->operation() . '(';
-        $code .= "'" . $this->reference() . "', ";
-        $code .= '$' . str_replace('.', '->', $this->reference());
-        $code .= ');';
+        if($this->operation() == 'flash'){
+            $code = '$request->session()->' . $this->operation() . '(';
+            $code .= "'success', ";
+            $code .= '$' . str_replace('.', '->', $this->reference());
+            $code .= ');';
+
+        }else{
+            $code = '$request->session()->' . $this->operation() . '(';
+            $code .= "'" . $this->reference() . "', ";
+            $code .= '$' . str_replace('.', '->', $this->reference());
+            $code .= ');';
+        }
 
         return $code;
     }
