@@ -15,6 +15,7 @@ use Blueprint\Models\Statements\RespondStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
+use Blueprint\Models\Statements\FilterStatement;
 use Illuminate\Support\Str;
 
 class StatementLexer implements Lexer
@@ -27,6 +28,9 @@ class StatementLexer implements Lexer
             switch ($command) {
                 case 'query':
                     $statements[] = $this->analyzeQuery($statement);
+                    break;
+                case 'filter':
+                    $statements[] = $this->analyzeFilter($statement);
                     break;
                 case 'render':
                     $statements[] = $this->analyzeRender($statement);
@@ -164,6 +168,20 @@ class StatementLexer implements Lexer
     private function extractTokens(string $statement, int $limit = -1)
     {
         return array_pad(preg_split('/[ \t]+/', $statement, $limit), $limit, null);
+    }
+    private function analyzeFilter($statement)
+    {
+        // dd($statement);
+        $reference = $statement;
+        $collection = null;
+        if (Str::contains($statement, ':')) {
+            $collection = Str::before($reference, ':');
+            $reference = Str::after($reference, ':');
+        }
+
+        if ($collection === 'usercurrent') {
+            return new FilterStatement($collection, $reference);
+        }
     }
 
     private function analyzeQuery($statement)

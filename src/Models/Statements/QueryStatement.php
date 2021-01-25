@@ -63,12 +63,23 @@ class QueryStatement
         foreach ($this->clauses as $clause) {
             [$method, $argument] = explode(':', $clause);
 
+
             if (in_array($method, ['where', 'order', 'pluck'])) {
                 $column = $this->columnName($model, $argument);
             }
 
             if ($method === 'where') {
-                $methods[] = $method . '(' . "'{$column}', $" . str_replace('.', '->', $argument) . ')';
+
+                if($argument == 'user_id'){
+
+                    $methods[] = $method . '(' . "'{$column}', " . '\Illuminate\Support\Facades\Auth::id()'. ')';
+
+                }else{
+
+                    $methods[] = $method . '(' . "'{$column}', $" . str_replace('.', '->', $argument) . ')';
+
+                }
+            
             } elseif ($method === 'pluck') {
                 $pluck_field = $argument;
                 $methods[] = "pluck('{$column}')";

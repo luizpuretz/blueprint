@@ -16,6 +16,7 @@ use Blueprint\Models\Statements\RespondStatement;
 use Blueprint\Models\Statements\SendStatement;
 use Blueprint\Models\Statements\SessionStatement;
 use Blueprint\Models\Statements\ValidateStatement;
+use Blueprint\Models\Statements\FilterStatement;
 use Blueprint\Tree;
 use Illuminate\Support\Str;
 
@@ -108,6 +109,7 @@ class ControllerGenerator implements Generator
             $using_validation = false;
 
             foreach ($statements as $statement) {
+
                 if ($statement instanceof SendStatement) {
                     $body .= self::INDENT.$statement->output().PHP_EOL;
                     if ($statement->type() === SendStatement::TYPE_NOTIFICATION_WITH_FACADE) {
@@ -151,6 +153,8 @@ class ControllerGenerator implements Generator
                 } elseif ($statement instanceof EloquentStatement) {
                     $body .= self::INDENT.$statement->output($controller->prefix(), $name, $using_validation).PHP_EOL;
                     $this->addImport($controller, $this->determineModel($controller, $statement->reference()));
+                } elseif ($statement instanceof FilterStatement) {
+                    $body .= self::INDENT.$statement->output($controller->prefix(), $name).PHP_EOL;
                 } elseif ($statement instanceof QueryStatement) {
                     $body .= self::INDENT.$statement->output($controller->prefix()).PHP_EOL;
                     $this->addImport($controller, $this->determineModel($controller, $statement->model()));

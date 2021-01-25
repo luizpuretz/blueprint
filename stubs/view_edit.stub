@@ -19,13 +19,15 @@
             @endif
 
             <div class="p-5 overflow-hidden bg-white shadow-xl sm:rounded-lg">
-                <form action="{{ route('{{ routecreate }}') }}" method="POST">
+                <form action="{{ {{ routeedit }} }}" method="POST">
                     
+                    @method('PUT')
+
                     @csrf
     
                     {{ view }}
 
-                    <button class="px-4 py-2 ml-1 font-bold text-white bg-green-500 rounded hover:bg-green-700" type="submit">{{ __('Save') }}</button>
+                    <button class="px-4 py-2 ml-1 font-bold text-white bg-green-500 rounded hover:bg-green-700" type="submit">{{ __('Edit') }}</button>
 
                 </form> 
             </div>

@@ -5,6 +5,12 @@
         </h2>
     </x-slot>
 
+    <div class="mt-12 ">
+        <div class="grid mx-auto md:gap-6 gap-y-6 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-1 lg:gap-x-8 max-w-7xl sm:px-6 lg:px-8">
+            {{ selecteforredirect }}
+        </div>
+    </div>
+
     <div class="py-12">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             @include('flash.message')
